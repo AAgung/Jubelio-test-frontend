@@ -19,6 +19,28 @@ class ProductStore {
     })
   }
 
+  getProduct() {
+    let url = process.env.REACT_APP_API_URL + `/products?page=${this.page}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          if(this.page > 1) {
+            if(result.data.length > 0) {
+              this.page++;
+              this.products = [...this.products, ...result.data];
+            } 
+          } else {
+            this.products = result.data;
+            this.page++;
+          }
+        })
+        .catch((error) => {
+          alert('Something error with get data process');
+          console.error('Error:', error);
+        });
+  }
+
   importProductFromElevania(e) {
     e.target.disabled = true;
     let url = process.env.REACT_APP_API_URL + '/products/import-from-elevania';
@@ -27,19 +49,38 @@ class ProductStore {
         .then((result) => {
           console.log(result);
           e.target.disabled = false;
+          this.page = 1;
+          this.getProduct();
           alert(result.message);
         })
         .catch((error) => {
           e.target.disabled = false;
-          alert('Something error with import process');
+          alert('Something error with import data process');
           console.error('Error:', error);
         });
   }
 
   deleteProduct(product = null) {
-    console.log('delete');
+    if (window.confirm(`Are you sure to delete this product ${product.sku}`) === true) {
+      let url = process.env.REACT_APP_API_URL + `/products/${product.sku}`;
+        fetch(url, {
+          method: 'DELETE'
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            console.log(result);
+            this.page = 1;
+            this.getProduct();
+            alert(result.message);
+          })
+          .catch((error) => {
+            alert('Something error with delete data process');
+            console.error('Error:', error);
+          });
+    }
   }
 
+  // Modal Detail Handler
   handleModalDetailShow(product = null) {
     this.isModalDetailShow = true;
     this.productSelected = product;

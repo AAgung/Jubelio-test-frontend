@@ -7,7 +7,7 @@ const ProductCard = observer(({ product }) => {
   const productStore = useContext(ProductStoreContext);
 
   return (
-    <Col md="3">
+    <Col md="3" className='mb-3'>
       <Card>
         <Card.Img variant="top" src={product?.image} />
         <Card.Body>

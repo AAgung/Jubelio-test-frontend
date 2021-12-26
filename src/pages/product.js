@@ -6,29 +6,20 @@ import ProductModalDetail from '../components/product/ProductModalDetail';
 import { ProductStoreContext } from '../store/product';
 import { observer } from 'mobx-react';
 
-const productMock = [
-  {
-    sku: 1324134,
-    name: 'Product A',
-    description: 'This is description for Product A',
-    price: 1000.00,
-    image: 'https://dummyimage.com/600x400/000/fff'
-  },
-  {
-    sku: 12341123,
-    name: 'Product B',
-    description: 'This is description for Product B lasdfkdjfa adfkjadlfj',
-    price: 1000.00,
-    image: 'https://dummyimage.com/600x400/000/fff'
-  }
-]
-
 const product = observer(() => {
   const productStore = useContext(ProductStoreContext);
 
-  useEffect(() => {
+  console.log(productStore.products)
+  window.onscroll = async () => {
+    if (window.innerHeight + document.documentElement.scrollTop 
+        === document.documentElement.offsetHeight) {
+      await productStore.getProduct();
+    }
+  }
+
+  useEffect(async () => {
+    await productStore.getProduct();
     productStore.isModalDetailShow = false;
-    productStore.products = productMock;
     productStore.productSelected = null;
   }, [productStore]);
 
