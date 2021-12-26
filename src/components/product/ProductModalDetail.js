@@ -14,7 +14,6 @@ const ProductModalDetail = observer(() => {
       image: '',
     };
   }
-  console.log(productStore.productSelected.image)
   return (
     <Modal
       show={productStore.isModalDetailShow}

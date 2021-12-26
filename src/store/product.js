@@ -19,8 +19,21 @@ class ProductStore {
     })
   }
 
-  importProductFromElevania() {
-    console.log('import');
+  importProductFromElevania(e) {
+    e.target.disabled = true;
+    let url = process.env.REACT_APP_API_URL + '/products/import-from-elevania';
+      fetch(url)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          e.target.disabled = false;
+          alert(result.message);
+        })
+        .catch((error) => {
+          e.target.disabled = false;
+          alert('Something error with import process');
+          console.error('Error:', error);
+        });
   }
 
   deleteProduct(product = null) {
