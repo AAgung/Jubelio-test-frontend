@@ -11,8 +11,8 @@ const ProductHeader = observer(({ product }) => {
       <h1>Product List</h1>
       <div>
         <Button variant="success" className='me-2'
-          onClick={(e) => {
-            productStore.importProductFromElevania(e);
+          onClick={async (e) => {
+            await productStore.importProductFromElevania(e);
           }}>Import from Elevania</Button>
         <Button variant="primary" onClick={() => {
           productStore.handleModalDetailShow();

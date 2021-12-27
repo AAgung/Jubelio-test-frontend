@@ -9,7 +9,7 @@ const ProductCard = observer(({ product }) => {
   return (
     <Col md="3" className='mb-3'>
       <Card>
-        <Card.Img variant="top" src={product?.image} />
+        <Card.Img variant="top" src={product?.image} style={{height: '15em'}} />
         <Card.Body>
           <Card.Title>
             <div className='d-flex justify-content-between'>
@@ -24,7 +24,7 @@ const ProductCard = observer(({ product }) => {
             overflowY: 'auto'
           }}>
             <Card.Text>
-              {product?.description}
+              {product?.description ?? ''}
             </Card.Text>
           </div>
           <div className='d-flex justify-content-end'>

@@ -9,11 +9,9 @@ import { observer } from 'mobx-react';
 const product = observer(() => {
   const productStore = useContext(ProductStoreContext);
 
-  console.log(productStore.products)
-  window.onscroll = async () => {
-    if (window.innerHeight + document.documentElement.scrollTop 
-        === document.documentElement.offsetHeight) {
-      await productStore.getProduct();
+  window.onscroll = () => {    
+    if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+      productStore.getProduct();
     }
   }
 

@@ -1,24 +1,32 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { createContext } from "react";
 
 class ProductStore {
   page = 1;
   products = [];
-  productSelected = null;
+  productSelectedSKU = '';
+  productSelectedData = null;
   isModalDetailShow = false;
   
   constructor() {
-    makeAutoObservable(this, {
+    makeObservable(this, {
       page: observable,
       products: observable,
-      productSelected: observable,
+      productSelectedSKU: observable,
+      productSelectedData: observable,
       isModalDetailShow: observable,
+      getProduct: action,
+      createProduct: action,
+      updateProduct: action,
+      importProductFromElevania: action,
+      deleteProduct: action,
       handleModalDetailShow: action,
       handleModalDetailClose: action,
       handleModalDetailSubmit: action,
     })
   }
 
+  // action handler to get product with page query param 
   getProduct() {
     let url = process.env.REACT_APP_API_URL + `/products?page=${this.page}`;
       fetch(url)
@@ -27,8 +35,8 @@ class ProductStore {
           console.log(result);
           if(this.page > 1) {
             if(result.data.length > 0) {
-              this.page++;
               this.products = [...this.products, ...result.data];
+              this.page++;
             } 
           } else {
             this.products = result.data;
@@ -41,6 +49,61 @@ class ProductStore {
         });
   }
 
+  // action handler to create product
+  createProduct(payload, cb) {
+    let url = process.env.REACT_APP_API_URL + `/products`;
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: payload
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          if(result.success) {
+            this.page = 1;
+            this.getProduct();
+            this.handleModalDetailClose();
+          }
+          cb();
+          alert(result.message);
+        })
+        .catch((error) => {
+          alert('Something error with get data process');
+          console.error('Error:', error);
+        });
+  }
+
+  // action handler to update product
+  updateProduct(payload, cb) {
+    let url = process.env.REACT_APP_API_URL + `/products/${this.productSelectedSKU}`;
+      fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: payload
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          if(result.success) {
+            this.page = 1;
+            this.getProduct();
+            this.handleModalDetailClose();
+          }
+          cb();
+          alert(result.message);
+        })
+        .catch((error) => {
+          alert('Something error with get data process');
+          console.error('Error:', error);
+        });
+  }
+
+  // action handler to import product from elevania
   importProductFromElevania(e) {
     e.target.disabled = true;
     let url = process.env.REACT_APP_API_URL + '/products/import-from-elevania';
@@ -49,8 +112,7 @@ class ProductStore {
         .then((result) => {
           console.log(result);
           e.target.disabled = false;
-          this.page = 1;
-          this.getProduct();
+          window.location.reload();
           alert(result.message);
         })
         .catch((error) => {
@@ -60,6 +122,7 @@ class ProductStore {
         });
   }
 
+  // action handler to delete product
   deleteProduct(product = null) {
     if (window.confirm(`Are you sure to delete this product ${product.sku}`) === true) {
       let url = process.env.REACT_APP_API_URL + `/products/${product.sku}`;
@@ -80,24 +143,37 @@ class ProductStore {
     }
   }
 
-  // Modal Detail Handler
+  // action handler for modal detail product
   handleModalDetailShow(product = null) {
     this.isModalDetailShow = true;
-    this.productSelected = product;
+    this.productSelectedSKU = product ? product.sku : '';
+    this.productSelectedData = Object.assign({}, product);
   }
 
   handleModalDetailClose() {
     this.isModalDetailShow = false;
-    this.productSelected = null;
+    this.productSelectedSKU = '';
+    this.productSelectedData = null;
   }
 
-  handleModalDetailSubmit(payload) {
-    if(this.productSelected) {
-      console.log(this.productSelected);
+  handleModalDetailSubmit(e) {
+    e.target.disabled = true;
+    const formData = new FormData();
+    formData.append('sku', this.productSelectedData.sku);
+    formData.append('name', this.productSelectedData.name);
+    formData.append('price', this.productSelectedData.price);
+    formData.append('description', this.productSelectedData.description ?? '');
+    formData.append('image', this.productSelectedData.image ?? '');
+
+    if(this.productSelectedSKU) { // update
+      this.updateProduct(formData, () => {
+        e.target.disabled = false;
+      });
     } else {
-      console.log(payload);
+      this.createProduct(formData, () => {
+        e.target.disabled = false;
+      });
     }
-    this.handleModalDetailClose();
   }
 }
 

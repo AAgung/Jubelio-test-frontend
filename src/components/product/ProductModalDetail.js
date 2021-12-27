@@ -5,15 +5,15 @@ import { observer } from 'mobx-react';
 
 const ProductModalDetail = observer(() => {
   const productStore = useContext(ProductStoreContext);
-  if(!productStore.productSelected) {
-    productStore.productSelected = {
+  if(!productStore.productSelectedData) {
+    productStore.productSelectedData = {
       sku: '',
       name: '',
       price: 0,
       description: '',
       image: '',
     };
-  }
+  } else productStore.productSelectedData.image = '';
   return (
     <Modal
       show={productStore.isModalDetailShow}
@@ -25,29 +25,29 @@ const ProductModalDetail = observer(() => {
       >
       <Form>
         <Modal.Header closeButton>
-          <Modal.Title>{productStore.productSelected ? `Update Product ${productStore.productSelected.sku}` : 'Create Product'}</Modal.Title>
+          <Modal.Title>{productStore.productSelectedData.oldSKU ? `Update Product ${productStore.productSelectedData.sku}` : 'Create Product'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FloatingLabel className="mb-2" controlId="input-product_sku" label="SKU No">
-            <Form.Control type="text" placeholder="Enter SKU No ..." value={productStore.productSelected?.sku} 
+          <FloatingLabel className="mb-2" controlId="input-product_sku" label="SKU * No">
+            <Form.Control type="text" placeholder="Enter SKU No ..." value={productStore.productSelectedData?.sku} required 
               onChange={(e) => {
-                productStore.productSelected.sku = e.target.value;
+                productStore.productSelectedData.sku = e.target.value;
               }}
             />
           </FloatingLabel>
 
-          <FloatingLabel className="mb-2" controlId="input-product_name" label="Name">
-            <Form.Control type="text" placeholder="Enter Name ..." value={productStore.productSelected?.name} 
+          <FloatingLabel className="mb-2" controlId="input-product_name" label="Name *">
+            <Form.Control type="text" placeholder="Enter Name ..." value={productStore.productSelectedData?.name} required
               onChange={(e) => {
-                productStore.productSelected.name = e.target.value;
+                productStore.productSelectedData.name = e.target.value;
               }}
             />
           </FloatingLabel>
           
-          <FloatingLabel className="mb-2" controlId="input-product_price" label="Price">
-            <Form.Control type="number" min="0" placeholder="Enter Price ..." value={productStore.productSelected?.price} 
+          <FloatingLabel className="mb-2" controlId="input-product_price" label="Price *">
+            <Form.Control type="number" min="0" placeholder="Enter Price ..." value={productStore.productSelectedData?.price} required
               onChange={(e) => {
-                productStore.productSelected.price = e.target.value;
+                productStore.productSelectedData.price = e.target.value;
               }}
             />
           </FloatingLabel>
@@ -57,15 +57,16 @@ const ProductModalDetail = observer(() => {
               as="textarea"
               placeholder="Enter Description ..."
               style={{ height: '100px' }}
+              value={productStore.productSelectedData?.description}
               onChange={(e) => {
-                productStore.productSelected.description = e.target.value;
+                productStore.productSelectedData.description = e.target.value;
               }}
             />
           </FloatingLabel>
           <FloatingLabel className="mb-2" controlId="input-product_image" label="Image">
             <Form.Control type="file" accept="image/jpg,image/jpeg,image/png" 
               onChange={(e) => {
-                productStore.productSelected.image = e.target.files;
+                productStore.productSelectedData.image = e.target.files[0];
               }}
             />
           </FloatingLabel>
@@ -74,9 +75,9 @@ const ProductModalDetail = observer(() => {
           <Button variant="secondary" onClick={() => {
               productStore.handleModalDetailClose();
             }}>Close</Button>
-          <Button variant="primary" onClick={() => {
-              productStore.handleModalDetailSubmit({});
-            }}>Save</Button>
+          <Button variant="primary" onClick={(e) => {
+            productStore.handleModalDetailSubmit(e);
+          }}>Save</Button>
         </Modal.Footer>
       </Form>
     </Modal>
