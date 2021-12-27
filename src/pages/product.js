@@ -28,6 +28,8 @@ const product = observer(() => {
         <Row className='justify-content-center'>
           Product no available
         </Row>
+
+        <ProductModalDetail />
       </Container>
     )
   }

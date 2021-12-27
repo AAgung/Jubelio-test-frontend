@@ -160,7 +160,7 @@ class ProductStore {
   handleModalDetailShow(product = null) {
     this.isModalDetailShow = true;
     this.productSelectedSKU = product ? product.sku : '';
-    this.productSelectedData = Object.assign({}, product);
+    this.productSelectedData = product ? Object.assign({}, product) : null;
   }
 
   handleModalDetailClose() {
