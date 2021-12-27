@@ -34,7 +34,7 @@ class ProductStore {
         .then((result) => {
           console.log(result);
           if(this.page > 1) {
-            if(result.data.length > 0) {
+            if(result.data) {
               this.products = [...this.products, ...result.data];
               this.page++;
             } 
@@ -62,13 +62,19 @@ class ProductStore {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
+          if(!result.success) {
+            if(result.data) {
+              alert(result.data[0].message);
+            } else alert(result.message);
+          }
+
           if(result.success) {
             this.page = 1;
             this.getProduct();
             this.handleModalDetailClose();
+            alert(result.message);
           }
           cb();
-          alert(result.message);
         })
         .catch((error) => {
           alert('Something error with get data process');
@@ -89,13 +95,20 @@ class ProductStore {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
+          if(!result.success) {
+            if(result.data.length > 0) {
+              alert(result.data[0].message);
+            } else alert(result.message);
+          }
+          
           if(result.success) {
             this.page = 1;
             this.getProduct();
             this.handleModalDetailClose();
+            alert(result.message);
           }
+
           cb();
-          alert(result.message);
         })
         .catch((error) => {
           alert('Something error with get data process');
@@ -159,9 +172,9 @@ class ProductStore {
   handleModalDetailSubmit(e) {
     e.target.disabled = true;
     const formData = new FormData();
-    formData.append('sku', this.productSelectedData.sku);
-    formData.append('name', this.productSelectedData.name);
-    formData.append('price', this.productSelectedData.price);
+    formData.append('sku', this.productSelectedData.sku ?? '');
+    formData.append('name', this.productSelectedData.name ?? '');
+    formData.append('price', this.productSelectedData.price ?? '');
     formData.append('description', this.productSelectedData.description ?? '');
     formData.append('image', this.productSelectedData.image ?? '');
 
