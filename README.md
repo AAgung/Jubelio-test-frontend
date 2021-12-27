@@ -1,4 +1,4 @@
-# Test Jubelio Backend
+# Test Jubelio Frontend
 
 ## Installation & Run APP
   1. Open your terminal in root project folder
