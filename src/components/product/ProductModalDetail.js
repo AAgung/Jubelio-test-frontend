@@ -25,7 +25,7 @@ const ProductModalDetail = observer(() => {
       >
       <Form>
         <Modal.Header closeButton>
-          <Modal.Title>{productStore.productSelectedData.oldSKU ? `Update Product ${productStore.productSelectedData.sku}` : 'Create Product'}</Modal.Title>
+          <Modal.Title>{productStore.productSelectedSKU ? `Update Product ${productStore.productSelectedSKU}` : 'Create Product'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <FloatingLabel className="mb-2" controlId="input-product_sku" label="SKU * No">

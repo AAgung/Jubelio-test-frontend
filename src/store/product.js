@@ -96,7 +96,7 @@ class ProductStore {
         .then((result) => {
           console.log(result);
           if(!result.success) {
-            if(result.data.length > 0) {
+            if(result.data) {
               alert(result.data[0].message);
             } else alert(result.message);
           }
