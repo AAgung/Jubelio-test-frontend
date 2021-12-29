@@ -24,9 +24,7 @@ const ProductCard = observer(({ product }) => {
             minHeight: '4em',
             overflowY: 'auto'
           }}>
-            <p>
-              <div dangerouslySetInnerHTML={{ __html: product?.description ?? '' }} />
-            </p>
+            <div dangerouslySetInnerHTML={{ __html: product?.description ?? '' }} />
           </div>
           <div className='d-flex justify-content-end mt-3'>
             <Button variant="primary" className='me-2'

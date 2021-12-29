@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Button, FloatingLabel, Form, Modal } from 'react-bootstrap';
 import { ProductStoreContext } from '../../store/product';
 import { observer } from 'mobx-react';
+import { Editor, OriginalTools } from 'react-bootstrap-editor';
 
 const ProductModalDetail = observer(() => {
   const productStore = useContext(ProductStoreContext);
@@ -28,41 +29,44 @@ const ProductModalDetail = observer(() => {
           <Modal.Title>{productStore.productSelectedSKU ? `Update Product ${productStore.productSelectedSKU}` : 'Create Product'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FloatingLabel className="mb-2" controlId="input-product_sku" label="SKU * No">
+          <Form.Group className="mb-3" controlId="input-product_sku">
+            <Form.Label>SKU No*</Form.Label>
             <Form.Control type="text" placeholder="Enter SKU No ..." value={productStore.productSelectedData?.sku} required 
               onChange={(e) => {
                 productStore.productSelectedData.sku = e.target.value;
               }}
             />
-          </FloatingLabel>
+          </Form.Group>
 
-          <FloatingLabel className="mb-2" controlId="input-product_name" label="Name *">
+          <Form.Group className="mb-3" controlId="input-product_name">
+            <Form.Label>Name*</Form.Label>
             <Form.Control type="text" placeholder="Enter Name ..." value={productStore.productSelectedData?.name} required
               onChange={(e) => {
                 productStore.productSelectedData.name = e.target.value;
               }}
             />
-          </FloatingLabel>
+          </Form.Group>
           
-          <FloatingLabel className="mb-2" controlId="input-product_price" label="Price *">
+          <Form.Group className="mb-3" controlId="input-product_price">
+            <Form.Label>Price*</Form.Label>
             <Form.Control type="number" min="0" placeholder="Enter Price ..." value={productStore.productSelectedData?.price} required
               onChange={(e) => {
                 productStore.productSelectedData.price = e.target.value;
               }}
             />
-          </FloatingLabel>
+          </Form.Group>
+          
+          <Form.Group className="mb-3" controlId="input-product_description">
+            <Form.Label>Description</Form.Label>
+            <Editor
+                  tools={OriginalTools}
+                  value={productStore.productSelectedData?.description}
+                  onChange={(e) => {
+                    productStore.productSelectedData.description = e;
+                  }}
+              />
+          </Form.Group>
 
-          <FloatingLabel className="mb-2" controlId="input-product_description" label="Description">
-            <Form.Control
-              as="textarea"
-              placeholder="Enter Description ..."
-              style={{ height: '100px' }}
-              value={productStore.productSelectedData?.description}
-              onChange={(e) => {
-                productStore.productSelectedData.description = e.target.value;
-              }}
-            />
-          </FloatingLabel>
           <FloatingLabel className="mb-2" controlId="input-product_image" label="Image">
             <Form.Control type="file" accept="image/jpg,image/jpeg,image/png" 
               onChange={(e) => {

@@ -6,6 +6,5 @@ export const configUrlOptions = (options) => {
       Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`,
     };
   }
-  console.log(update);
   return update;
 }
