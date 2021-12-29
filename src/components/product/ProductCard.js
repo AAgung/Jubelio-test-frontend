@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Button, Card, Col } from 'react-bootstrap';
 import { ProductStoreContext } from '../../store/product';
 import { observer } from 'mobx-react';
+import { formatMoney } from '../../helpers/number-format';
 
 const ProductCard = observer(({ product }) => {
   const productStore = useContext(ProductStoreContext);
@@ -14,7 +15,7 @@ const ProductCard = observer(({ product }) => {
           <Card.Title>
             <div className='d-flex justify-content-between'>
               <span>{product?.name}</span>
-              <span>{product?.price}</span>
+              <span style={{fontSize: '1rem'}}>{product?.price ? formatMoney(product?.price) : null}</span>
             </div>
           </Card.Title>
           <Card.Subtitle className='text-muted'>{product?.sku}</Card.Subtitle>
@@ -23,9 +24,9 @@ const ProductCard = observer(({ product }) => {
             minHeight: '4em',
             overflowY: 'auto'
           }}>
-            <Card.Text>
-              {product?.description ?? ''}
-            </Card.Text>
+            <p>
+              <div dangerouslySetInnerHTML={{ __html: product?.description ?? '' }} />
+            </p>
           </div>
           <div className='d-flex justify-content-end'>
             <Button variant="primary" className='me-2'
