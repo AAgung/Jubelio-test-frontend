@@ -1,5 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import { createContext } from "react";
+import { configUrlOptions } from '../config'; 
 
 class ProductStore {
   page = 1;
@@ -7,7 +8,6 @@ class ProductStore {
   productSelectedSKU = '';
   productSelectedData = null;
   isModalDetailShow = false;
-  
   constructor() {
     makeObservable(this, {
       page: observable,
@@ -29,8 +29,11 @@ class ProductStore {
   // action handler to get product with page query param 
   getProduct() {
     let url = process.env.REACT_APP_API_URL + `/products?page=${this.page}`;
-      fetch(url)
-        .then((response) => response.json())
+      fetch(url, configUrlOptions())
+        .then((response) => {
+          if(!response.ok) throw response;
+          return response.json();
+        })
         .then((result) => {
           console.log(result);
           if(this.page > 1) {
@@ -44,21 +47,25 @@ class ProductStore {
           }
         })
         .catch((error) => {
-          alert('Something error with get data process');
-          console.error('Error:', error);
+          if(error) {
+            return error.json().then(errMessage => {
+              alert(errMessage.message ?? 'Something error with get data process');
+            });
+          }
+          return alert('Something error with get data process');
         });
   }
 
   // action handler to create product
   createProduct(payload, cb) {
     let url = process.env.REACT_APP_API_URL + `/products`;
-      fetch(url, {
+      fetch(url, configUrlOptions({
         method: 'POST',
         headers: {
           'Accept': 'application/json'
         },
         body: payload
-      })
+      }))
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
@@ -77,21 +84,25 @@ class ProductStore {
           cb();
         })
         .catch((error) => {
-          alert('Something error with get data process');
-          console.error('Error:', error);
+          if(error) {
+            return error.json().then(errMessage => {
+              alert(errMessage.message ?? 'Something error with get data process');
+            });
+          }
+          return alert('Something error with get data process');
         });
   }
 
   // action handler to update product
   updateProduct(payload, cb) {
     let url = process.env.REACT_APP_API_URL + `/products/${this.productSelectedSKU}`;
-      fetch(url, {
+      fetch(url, configUrlOptions({
         method: 'PUT',
         headers: {
           'Accept': 'application/json'
         },
         body: payload
-      })
+      }))
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
@@ -111,8 +122,12 @@ class ProductStore {
           cb();
         })
         .catch((error) => {
-          alert('Something error with get data process');
-          console.error('Error:', error);
+          if(error) {
+            return error.json().then(errMessage => {
+              alert(errMessage.message ?? 'Something error with get data process');
+            });
+          }
+          return alert('Something error with get data process');
         });
   }
 
@@ -120,7 +135,7 @@ class ProductStore {
   importProductFromElevania(e) {
     e.target.disabled = true;
     let url = process.env.REACT_APP_API_URL + '/products/import-from-elevania';
-      fetch(url)
+      fetch(url, configUrlOptions())
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
@@ -130,8 +145,12 @@ class ProductStore {
         })
         .catch((error) => {
           e.target.disabled = false;
-          alert('Something error with import data process');
-          console.error('Error:', error);
+          if(error) {
+            return error.json().then(errMessage => {
+              alert(errMessage.message ?? 'Something error with get data process');
+            });
+          }
+          return alert('Something error with get data process');
         });
   }
 
@@ -139,9 +158,9 @@ class ProductStore {
   deleteProduct(product = null) {
     if (window.confirm(`Are you sure to delete this product ${product.sku}`) === true) {
       let url = process.env.REACT_APP_API_URL + `/products/${product.sku}`;
-        fetch(url, {
-          method: 'DELETE'
-        })
+        fetch(url, configUrlOptions({
+          method: 'DELETE',
+        }))
           .then((response) => response.json())
           .then((result) => {
             console.log(result);
@@ -150,8 +169,12 @@ class ProductStore {
             alert(result.message);
           })
           .catch((error) => {
-            alert('Something error with delete data process');
-            console.error('Error:', error);
+            if(error) {
+              return error.json().then(errMessage => {
+                alert(errMessage.message ?? 'Something error with get data process');
+              });
+            }
+            return alert('Something error with get data process');
           });
     }
   }

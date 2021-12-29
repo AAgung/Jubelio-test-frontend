@@ -15,8 +15,8 @@ const product = observer(() => {
     }
   }
 
-  useEffect(async () => {
-    await productStore.getProduct();
+  useEffect(() => {
+    productStore.getProduct();
     productStore.isModalDetailShow = false;
     productStore.productSelected = null;
   }, [productStore]);

@@ -28,7 +28,7 @@ const ProductCard = observer(({ product }) => {
               <div dangerouslySetInnerHTML={{ __html: product?.description ?? '' }} />
             </p>
           </div>
-          <div className='d-flex justify-content-end'>
+          <div className='d-flex justify-content-end mt-3'>
             <Button variant="primary" className='me-2'
               onClick={() => {
                 productStore.handleModalDetailShow(product);
